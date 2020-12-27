@@ -32,7 +32,11 @@
             <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
             <h1 id="city-name">City Name</h1>
             <h3><span id="temp">00</span>&deg;C</h3>
-            <h1 class="lead">Clouds</h1>
+            <div class="d-flex justify-content-center">
+                <h4 class="m-3">Min <span id="tempMin">00</span>&deg;C</h4>
+                <h4 class="m-3">Max <span id="tempMax">00</span>&deg;C</h4>
+            </div>
+            <h1 id="weather-type" class="lead"></h1>
         </div>
     </div>
 
@@ -46,17 +50,32 @@
             fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${key}`)
                 .then(res => res.json())
                 .then(data => {
-                    const { main, name, sys } = data;
+                    const { main, name, weather } = data;
                     const temp = main.temp - 273.15;
+                    const tempMin = main.temp_min - 273.15;
+                    const tempMax = main.temp_max - 273.15;
+
+                    const weatherType = weather[0].main
+
                     const newTemp = Math.floor(temp)
+                    const newTempMin = Math.floor(tempMin)
+                    const newTempMax = Math.ceil(tempMax)
+
+
                     document.getElementById('temp').innerHTML = newTemp;
+                    document.getElementById('tempMin').innerHTML = newTempMin;
+                    document.getElementById('tempMax').innerHTML = newTempMax;
+                    document.getElementById('weather-type').innerHTML = weatherType;
+
+
+                    document.getElementById('city-name').innerText = name;
+                    console.log(data);
+                    console.log(weatherType);
                 })
         }
 
 
         document.getElementById('searchBtn').addEventListener('click', function () {
-            const city = document.getElementById('input-text').value;
-            document.getElementById('city-name').innerText = city;
             updateWeather();
         })
 
